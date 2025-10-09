@@ -32,7 +32,7 @@ public class AlarmItemsService {
             AlarmItemController alarmItemController = loader.getController();
 
             alarmItemController.initialize(alarm,
-                    () -> handleDeleteAlarm(alarm, alarmItem),
+                    () -> handleDeleteAlarm(alarm),
                     (newStatus) -> handleStatusChange(alarm, newStatus));
 
             updateNoAlarmsLabel();
@@ -44,20 +44,23 @@ public class AlarmItemsService {
         }
     }
 
-    private void handleDeleteAlarm(AlarmInterface alarm, HBox alarmItem){
-        alarmsContainer.getChildren().remove(alarmItem);
+    private void handleDeleteAlarm(AlarmInterface alarm){
         alarmManager.deleteAlarm(alarm.getId());
         updateNoAlarmsLabel();
+        reloadAlarmList();
     }
 
     private void handleStatusChange(AlarmInterface alarm, boolean newStatus) {
         alarmManager.updateAlarmStatus(alarm.getId(), newStatus);
+        reloadAlarmList();
     }
 
     private void updateNoAlarmsLabel() {
         if (alarmManager.hasAlarm()) {
             labelNoAlarms.setVisible(false);
+            return;
         }
+        labelNoAlarms.setVisible(true);
     }
 
     public void reloadAlarmList() {

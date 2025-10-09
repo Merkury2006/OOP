@@ -17,26 +17,30 @@ import java.util.Optional;
 public class MainController {
     @FXML private Label labelNoAlarms;
     @FXML private VBox alarmsContainer;
-    private final AlarmManagerInterface alarmManager = new AlarmManager();
-    private final NotificationService notificationService = new NotificationService();
-    private final AlarmAddDialogService alarmAddDialogService = new AlarmAddDialogService();
-    private final AlarmItemsService alarmItemsService = new AlarmItemsService(alarmManager);
+    private AlarmManagerInterface alarmManager;
+    private NotificationService notificationService;
+    private AlarmAddDialogService alarmAddDialogService;
+    private AlarmItemsService alarmItemsService;
 
     @FXML
     public void initialize(){
-        try {
-            alarmManager.loadAlarms();
-            Platform.runLater(() -> alarmItemsService.reloadAlarmList());
-            startAlarmChecker();
-        } catch (Exception e) {
-            Utils.showError("Ошибка инициализации: " + e.getMessage());
-        }
+        this.alarmManager = new AlarmManager();
+        this.notificationService = new NotificationService();
+        this.alarmAddDialogService = new AlarmAddDialogService();
+        this.alarmItemsService = new AlarmItemsService(alarmManager);
+        Platform.runLater(() -> alarmItemsService.reloadAlarmList());
+        startAlarmChecker();
     }
 
     public void setMainStage(Stage stage) {
+        try {
         notificationService.setMainStage(stage);
         alarmAddDialogService.setMainStage(stage);
         alarmItemsService.setAlarmsItemsContainers(alarmsContainer, labelNoAlarms);
+
+        } catch (Exception e) {
+            Utils.showError("Ошибка инициализации: " + e.getMessage());
+        }
     }
 
     private void startAlarmChecker() {
@@ -56,26 +60,41 @@ public class MainController {
 
     private void checkAlarms() {
         alarmManager.getAlarmsToRing().forEach(alarm -> {
-            Platform.runLater( () -> {
+            Platform.runLater(() -> {
+                alarmManager.markAlarmAsTriggered(alarm);
                 notificationService.showAlarmNotification(alarm,
-                        result ->  {
+                        result -> {
                             switch (result) {
                                 case SNOOZE:
-                                    LocalTime snoozeTime = alarm.getTime().plusMinutes(5);
-                                    alarmManager.addAlarm(snoozeTime, true, alarm.getName() + ' ' + alarm.getTime() + " (Отложенный)");
+                                    LocalTime snoozeTime = alarm.getTime().plusMinutes(3);
+
+                                    if (alarm instanceof SnoozeAlarm) {
+                                        ((SnoozeAlarm) alarm).reschedule(snoozeTime);
+                                        alarmManager.saveAlarms();
+                                    } else if (alarm instanceof RegularAlarm) {
+                                       alarmManager.addAlarm(snoozeTime, true, alarm.getMelody(),
+                                               alarm.getName() + ", отложенный от: " + alarm.getTime(), alarm.getId());
+                                    }
                                     break;
+
                                 case DISMISS:
+                                    if (alarm instanceof SnoozeAlarm) {
+                                        alarmManager.updateAlarmStatus( ((SnoozeAlarm) alarm).getParentAlarmId(), false);
+                                        alarmManager.deleteAlarm(alarm.getId());
+                                    } else {
+                                        alarmManager.updateAlarmStatus(alarm.getId(), false);
+                                    }
+                                    break;
+
                                 case IGNORE:
+                                    break;
                             }
-                            alarmManager.updateAlarmStatus(alarm.getId(), false);
-                            alarmManager.saveAlarms();
+
                             alarmItemsService.reloadAlarmList();
                         });
             });
         });
     }
-
-
 
     @FXML
     public void addAlarm() {

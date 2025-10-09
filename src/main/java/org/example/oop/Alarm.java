@@ -2,62 +2,47 @@ package org.example.oop;
 
 import java.time.LocalTime;
 
-public class Alarm implements AlarmInterface {
-    private final Long ID;
-    private final LocalTime time;
-    private boolean isActive;
-    private String name;
-    private String melody;
+public abstract class Alarm implements AlarmInterface {
+    public enum AlarmType {
+        REGULAR,
+        REPEATING,
+        REMINDER,
+        SNOOZE
+    }
 
+    protected Long id;
+    protected LocalTime time;
+    protected boolean active;
+    protected String melody;
+    protected String name;
 
-    public Alarm(Long ID, LocalTime time, boolean isActive, String melody, String name) {
-        this.ID = ID;
+    public Alarm(Long id, LocalTime time, boolean active, String melody, String name) {
+        this.id = id;
         this.time = time;
-        this.isActive = isActive;
+        this.active = active;
         this.melody = melody;
         this.name = name;
     }
 
-    public Alarm(Long ID, LocalTime time, boolean isActive, String melody) {
-        this.ID = ID;
-        this.time = time;
-        this.isActive = isActive;
-        this.melody = melody;
-        this.name = "Будильник";
+    @Override public Long getId() { return id; }
+
+    @Override public LocalTime getTime() { return time; }
+    @Override public void setTime(LocalTime time) { this.time = time; }
+
+    @Override public boolean isActive() { return active; }
+    @Override public void setActive(boolean active) { this.active = active; }
+
+    @Override public String getName() {return name; }
+
+    @Override public String getMelody() {return melody;}
+
+
+
+    @Override public abstract boolean shouldRingToday();
+
+    protected boolean isTimeToRingNow() {
+        return time.getHour() == LocalTime.now().getHour() && time.getMinute() == LocalTime.now().getMinute();
     }
 
-    @Override
-    public Long getId() {
-        return this.ID;
-    }
-
-    @Override
-    public boolean isActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        this.isActive = active;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public LocalTime getTime() {
-        return this.time;
-    }
-
-    @Override
-    public String getMelody() {
-        return this.melody;
-    }
+    @Override public abstract AlarmType getType();
 }

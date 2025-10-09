@@ -35,6 +35,9 @@ public class AlarmAddDialogService {
 
     private Stage mainStage;
 
+    public AlarmAddDialogService() {
+    }
+
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
     }

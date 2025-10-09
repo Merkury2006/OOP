@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane prefHeight="327.0" prefWidth="391.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.oop.Controllers.TimePickerController">
+<DialogPane prefHeight="474.0" prefWidth="473.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.oop.Controllers.TimePickerController">
 
     <content>
-        <VBox prefHeight="350.0" prefWidth="391.0" spacing="20" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
-            <Label alignment="CENTER" prefHeight="25.0" prefWidth="340.0" style="-fx-text-fill: #2c3e50; -fx-font-size: 16px; -fx-font-weight: bold;" text="🕐 Выберите время будильника" textAlignment="CENTER" />
+        <VBox prefHeight="410.0" prefWidth="488.0" spacing="20" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="642.0" style="-fx-text-fill: #2c3e50; -fx-font-size: 16px; -fx-font-weight: bold;" text="🕐 Выберите время будильника" textAlignment="CENTER" />
 
             <VBox prefHeight="184.0" prefWidth="347.0" spacing="15" style="-fx-background-color: #f8f9fa; -fx-padding: 15; -fx-background-radius: 8;">
                 <Label style="-fx-text-fill: #5a6c7d; -fx-font-size: 14px;" text="Настройте время:" />
@@ -42,10 +42,10 @@
          <VBox prefHeight="49.0" prefWidth="351.0">
                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <Label alignment="CENTER" prefHeight="25.0" prefWidth="128.0" style="-fx-text-fill: #5a6c7d; -fx-font-size: 12px;" text="Выберите мелодию:" />
-               <ComboBox fx:id="melodyComboBox" prefWidth="150.0" />
+               <ComboBox fx:id="melodyComboBox" prefHeight="25.0" prefWidth="175.0" />
                </HBox>
          </VBox>
-         <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="351.0" textAlignment="CENTER">
+         <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="625.0" textAlignment="CENTER">
             <font>
                <Font name="System Bold" size="32.0" />
             </font>

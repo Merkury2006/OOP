@@ -24,7 +24,6 @@ public class NotificationService {
         SNOOZE,
         IGNORE
     }
-    private final Set<Long> shownAlarmsIds = new HashSet<>();
     private Stage mainStage;
     private final AlarmSoundService alarmSoundService = new AlarmSoundService();
 
@@ -35,13 +34,7 @@ public class NotificationService {
     }
 
     public void showAlarmNotification(AlarmInterface alarm, Consumer<NotificationResult> callback) {
-        if (shownAlarmsIds.contains(alarm.getId())) {
-           callback.accept(NotificationResult.IGNORE);
-           return;
-        }
-        shownAlarmsIds.add(alarm.getId());
         try {
-
             alarmSoundService.playAlarmSound(AlarmSoundService.getMelodyPath(alarm.getMelody()));
 
             Dialog<ButtonType> dialog = createNotificationDialog(alarm);
@@ -50,10 +43,11 @@ public class NotificationService {
             alarmSoundService.stopAlarmSound();
 
             callback.accept(result);
+        } catch (Exception e) {
+            Utils.showError("Ошибка показа уведомления: " + e.getMessage());
+            callback.accept(NotificationResult.IGNORE);
         }
-        finally {
-            shownAlarmsIds.remove(alarm.getId());
-        }
+
     }
 
     private Dialog<ButtonType> createNotificationDialog(AlarmInterface alarm) {

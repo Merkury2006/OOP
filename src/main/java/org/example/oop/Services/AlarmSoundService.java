@@ -13,10 +13,12 @@ public class AlarmSoundService {
     private static final LinkedHashMap<String, String> mapOfMelodiesPaths = new LinkedHashMap<>();
 
     static {
-        mapOfMelodiesPaths.put("Классический будильник", "/org/example/oop/sounds/alarm.mp3");
-        mapOfMelodiesPaths.put("Нежный звонок", "/org/example/oop/sounds/gentle.mp3");
-        mapOfMelodiesPaths.put("Электронный", "/org/example/oop/sounds/electronic.mp3");
-        mapOfMelodiesPaths.put("Птички", "/org/example/oop/sounds/birds.mp3");
+        mapOfMelodiesPaths.put("Утро, пианино, птички", "/org/example/oop/sounds/Утро, пианино, птички (будильник) - zakachai1_ru.mp3");
+        mapOfMelodiesPaths.put("Нежный звонок", "/org/example/oop/sounds/Нежная мелодия - zakachai1_ru.mp3");
+        mapOfMelodiesPaths.put("Энигма", "/org/example/oop/sounds/Энигма — Principles - zakachai1_ru.mp3");
+        mapOfMelodiesPaths.put("Imagine me", "/org/example/oop/sounds/IMAGINE ME (Sagi) - zakachai1_ru.mp3");
+        mapOfMelodiesPaths.put("Мягкое пробуждение", "/org/example/oop/sounds/Будильник «Мягкое пробуждение» - zakachai1_ru.mp3");
+        mapOfMelodiesPaths.put("Гроза и гитара", "/org/example/oop/sounds/Гроза и гитара (Y3MR Remix — Babel) - zakachai1_ru.mp3");
     }
 
     public static ObservableList<String> getListKeysOfMelodiesPaths() {
