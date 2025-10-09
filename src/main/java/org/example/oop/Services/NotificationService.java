@@ -12,7 +12,6 @@ import org.example.oop.AlarmInterface;
 import org.example.oop.Controllers.NotificationController;
 import org.example.oop.Utils;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
@@ -42,7 +41,8 @@ public class NotificationService {
         }
         shownAlarmsIds.add(alarm.getId());
         try {
-            alarmSoundService.playAlarmSound("src/main/resources/org/example/oop/sounds/alarm.mp3");
+
+            alarmSoundService.playAlarmSound(AlarmSoundService.getMelodyPath(alarm.getMelody()));
 
             Dialog<ButtonType> dialog = createNotificationDialog(alarm);
             NotificationResult result = showAndResultDialog(dialog);
@@ -89,14 +89,12 @@ public class NotificationService {
             }
 
         } catch (IOException e) {
-            Utils.showError("Ошибка загрузки оповещения будильника");
+            Utils.showError("Ошибка загрузки оповещения будильника" + e.getMessage());
         }
         return dialog;
     }
 
     private NotificationResult showAndResultDialog(Dialog<ButtonType> dialog) {
-        Toolkit.getDefaultToolkit().beep(); //Звук
-
         try {
             Optional<ButtonType> result = dialog.showAndWait();
 
@@ -111,7 +109,7 @@ public class NotificationService {
                 }
             }
         } catch (Exception e) {
-            Utils.showError("Ошибка загрузки диалога");
+            Utils.showError("Ошибка загрузки диалога" + e.getMessage());
         }
         return NotificationResult.IGNORE;
     }

@@ -1,5 +1,12 @@
 package org.example.oop;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.fatboyindustrial.gsonjavatime.Converters;
+
+import java.io.*;
+import java.lang.reflect.Type;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,22 +15,25 @@ import java.util.Optional;
 public class AlarmManager implements AlarmManagerInterface {
     private List<AlarmInterface> alarmList = new ArrayList<>();
     private long nextId = 1;
+    private final Gson gson;
+    private static final String ALARMS_FILE = "data/alarms.json";
 
     public AlarmManager() {
-        loadAlarms();
+        this.gson = Converters.registerLocalTime(new GsonBuilder()).create();
+        this.loadAlarms();
     }
 
     @Override
-    public AlarmInterface addAlarm(LocalTime time, boolean active, String s) {
-        AlarmInterface alarm = new Alarm(nextId++, time, active, s);
+    public AlarmInterface addAlarm(LocalTime time, boolean active, String melody, String name) {
+        AlarmInterface alarm = new Alarm(nextId++, time, active, melody, name);
         alarmList.add(alarm);
         saveAlarms();
         return alarm;
     }
 
     @Override
-    public AlarmInterface addAlarm(LocalTime time, boolean active) {
-        AlarmInterface alarm = new Alarm(nextId++, time,active);
+    public AlarmInterface addAlarm(LocalTime time, boolean active, String melody) {
+        AlarmInterface alarm = new Alarm(nextId++, time,active, melody);
         alarmList.add(alarm);
         saveAlarms();
         return alarm;
@@ -77,12 +87,46 @@ public class AlarmManager implements AlarmManagerInterface {
 
     @Override
     public void saveAlarms() {
-
+        try {
+            File file = new File(ALARMS_FILE);
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+            try (FileWriter writer = new FileWriter(file)) {
+                gson.toJson(alarmList, writer);
+            }
+        } catch (IOException e) {
+            Utils.showError("Ошибка сохранения JSON: " + e.getMessage());
+        }
     }
 
     @Override
     public void loadAlarms() {
+        File file = new File(ALARMS_FILE);
 
+        if (!file.exists() || file.length() == 0) {
+            this.alarmList = new ArrayList<>();
+            return;
+        }
+
+        try (FileReader fileReader = new FileReader(file)) {
+            Type listType = new TypeToken<List<Alarm>>(){}.getType();
+            List<AlarmInterface> alarms = gson.fromJson(fileReader, listType);
+
+            if (alarms == null) {
+                this.alarmList = new ArrayList<>();
+                return;
+            }
+            this.alarmList = alarms;
+
+        } catch (IOException e) {
+            Utils.showError("Ошибка загрузки JSON: " + e.getMessage());
+            this.alarmList =  new ArrayList<>();
+        } catch (com.google.gson.JsonSyntaxException e) {
+            Utils.showError("Невалидный JSON: " + e.getMessage());
+            this.alarmList = new ArrayList<>();
+        }
     }
 
     @Override

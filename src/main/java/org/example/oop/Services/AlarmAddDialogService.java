@@ -14,14 +14,33 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 public class AlarmAddDialogService {
+
+     public class ResultAddAlarm {
+        private final LocalTime time;
+        private final String melody;
+
+        public ResultAddAlarm(LocalTime time, String melody) {
+            this.time = time;
+            this.melody = melody;
+        }
+
+        public LocalTime getTime() {
+            return time;
+        }
+
+        public String getMelody() {
+            return melody;
+        }
+    }
+
     private Stage mainStage;
 
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
     }
 
-    public Optional<LocalTime> showAlarmAddDialog() {
-        Dialog<LocalTime> dialog = new Dialog<>();
+    public Optional<ResultAddAlarm> showAlarmAddDialog() {
+        Dialog<ResultAddAlarm> dialog = new Dialog<>();
         dialog.setTitle("Новый будильник");
 
         if (mainStage != null) {
@@ -37,7 +56,7 @@ public class AlarmAddDialogService {
             dialog.setResultConverter(buttonType -> {
                 if (buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     TimePickerController controller = loader.getController();
-                    return controller.getSelectedTime();
+                    return new ResultAddAlarm(controller.getSelectedTime(), controller.getSelectedMelody());
                 }
                 return null;
             });
@@ -45,7 +64,7 @@ public class AlarmAddDialogService {
             return dialog.showAndWait();
 
         } catch (IOException e) {
-            Utils.showError("Ошибка загрузки");
+            Utils.showError("Ошибка загрузки FXML: " + e.getMessage());
             return Optional.empty();
         }
     }

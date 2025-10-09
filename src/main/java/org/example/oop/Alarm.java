@@ -7,19 +7,22 @@ public class Alarm implements AlarmInterface {
     private final LocalTime time;
     private boolean isActive;
     private String name;
+    private String melody;
 
 
-    public Alarm(Long ID, LocalTime time, boolean isActive, String name) {
+    public Alarm(Long ID, LocalTime time, boolean isActive, String melody, String name) {
         this.ID = ID;
         this.time = time;
         this.isActive = isActive;
+        this.melody = melody;
         this.name = name;
     }
 
-    public Alarm(Long ID, LocalTime time, boolean isActive) {
+    public Alarm(Long ID, LocalTime time, boolean isActive, String melody) {
         this.ID = ID;
         this.time = time;
         this.isActive = isActive;
+        this.melody = melody;
         this.name = "Будильник";
     }
 
@@ -51,5 +54,10 @@ public class Alarm implements AlarmInterface {
     @Override
     public LocalTime getTime() {
         return this.time;
+    }
+
+    @Override
+    public String getMelody() {
+        return this.melody;
     }
 }

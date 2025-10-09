@@ -40,7 +40,7 @@ public class AlarmItemsService {
             alarmsContainer.getChildren().add(alarmItem);
 
         } catch (IOException e) {
-            Utils.showError("Ошибка создания будульника");
+            Utils.showError("Ошибка создания будульника" + e.getMessage());
         }
     }
 

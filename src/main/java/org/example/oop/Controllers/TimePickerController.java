@@ -2,9 +2,11 @@ package org.example.oop.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import org.example.oop.Services.AlarmSoundService;
 
 import java.net.URL;
 import java.time.LocalTime;
@@ -12,15 +14,10 @@ import java.util.ResourceBundle;
 
 public class TimePickerController implements Initializable {
 
-    @FXML
-    private Spinner<Integer> hourSpinner;
-
-    @FXML
-    private Spinner<Integer> minuteSpinner;
-
-    @FXML
-    private Label selectedTimeLabel;
-
+    @FXML private Spinner<Integer> hourSpinner;
+    @FXML private Spinner<Integer> minuteSpinner;
+    @FXML private Label selectedTimeLabel;
+    @FXML private ComboBox<String> melodyComboBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -32,6 +29,9 @@ public class TimePickerController implements Initializable {
 
         hourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateTimeDisplay());
         minuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updateTimeDisplay());
+
+        melodyComboBox.setItems(AlarmSoundService.getListKeysOfMelodiesPaths());
+        melodyComboBox.getSelectionModel().selectFirst();
         updateTimeDisplay();
     }
 
@@ -61,6 +61,10 @@ public class TimePickerController implements Initializable {
 
     public LocalTime getSelectedTime() {
         return LocalTime.of(hourSpinner.getValue(), minuteSpinner.getValue());
+    }
+
+    public String getSelectedMelody() {
+        return melodyComboBox.getValue();
     }
 
     public String getSelectedTimeFormatted() {

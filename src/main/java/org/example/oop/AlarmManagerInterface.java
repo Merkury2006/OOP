@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AlarmManagerInterface {
-    AlarmInterface addAlarm(LocalTime time, boolean active, String s);
-    AlarmInterface addAlarm(LocalTime time, boolean active);
+    AlarmInterface addAlarm(LocalTime time, boolean active, String melody, String name);
+    AlarmInterface addAlarm(LocalTime time, boolean active, String melody);
     void deleteAlarm(Long id);
     void updateAlarmStatus(Long id, boolean active);
 

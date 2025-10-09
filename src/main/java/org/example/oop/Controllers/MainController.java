@@ -24,8 +24,13 @@ public class MainController {
 
     @FXML
     public void initialize(){
-        alarmManager.loadAlarms();
-        startAlarmChecker();
+        try {
+            alarmManager.loadAlarms();
+            Platform.runLater(() -> alarmItemsService.reloadAlarmList());
+            startAlarmChecker();
+        } catch (Exception e) {
+            Utils.showError("Ошибка инициализации: " + e.getMessage());
+        }
     }
 
     public void setMainStage(Stage stage) {
@@ -54,9 +59,13 @@ public class MainController {
             Platform.runLater( () -> {
                 notificationService.showAlarmNotification(alarm,
                         result ->  {
-                            if (result == NotificationService.NotificationResult.SNOOZE) {
-                                LocalTime snoozeTime = alarm.getTime().plusMinutes(5);
-                                alarmManager.addAlarm(snoozeTime, true, alarm.getName() + ' ' + alarm.getTime() + " (Отложенный)");
+                            switch (result) {
+                                case SNOOZE:
+                                    LocalTime snoozeTime = alarm.getTime().plusMinutes(5);
+                                    alarmManager.addAlarm(snoozeTime, true, alarm.getName() + ' ' + alarm.getTime() + " (Отложенный)");
+                                    break;
+                                case DISMISS:
+                                case IGNORE:
                             }
                             alarmManager.updateAlarmStatus(alarm.getId(), false);
                             alarmManager.saveAlarms();
@@ -70,9 +79,9 @@ public class MainController {
 
     @FXML
     public void addAlarm() {
-        Optional<LocalTime> result = alarmAddDialogService.showAlarmAddDialog();
+        Optional<AlarmAddDialogService.ResultAddAlarm> result = alarmAddDialogService.showAlarmAddDialog();
         if (result.isPresent()){
-            AlarmInterface newAlarm = alarmManager.addAlarm(result.get(), true);
+            AlarmInterface newAlarm = alarmManager.addAlarm(result.get().getTime(), true, result.get().getMelody());
             alarmItemsService.createAndAddAlarmItem(newAlarm);
         }
 
