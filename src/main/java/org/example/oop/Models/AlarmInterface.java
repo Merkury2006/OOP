@@ -10,11 +10,19 @@ public interface AlarmInterface {
     boolean isActive();
     void setActive(boolean active);
 
+    default String getDisplayName() {
+        return getName();
+    }
+
     String getName();
 
     LocalTime getTime();
 
+    void setName(String name);
+
     String getMelody();
+
+    void setMelody(String melody);
 
     boolean shouldRingToday();
 

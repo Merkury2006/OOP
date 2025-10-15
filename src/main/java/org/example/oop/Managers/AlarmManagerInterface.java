@@ -9,12 +9,32 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface AlarmManagerInterface {
+    /**
+     * Создает обычный будильник
+     */
     AlarmInterface addAlarm(LocalTime time, boolean active, String melody, String name);
+
+    /**
+     * Создает повторяющийся будильник
+     */
     AlarmInterface addAlarm(LocalTime time, boolean active, String melody, String name, Set<DayOfWeek> days);
+
+    /**
+     * Создает отложенный будильник (Snooze)
+     */
     AlarmInterface addAlarm(LocalTime time, boolean active, String melody, String name, Long parentID);
 
     void deleteAlarm(Long id);
 
+    /**
+     * Обновляет обычный будильник
+     */
+    void updateAlarm(Long id, LocalTime time, String melody, String name);
+
+    /**
+     * Обновляет повторяющийся будильник
+     */
+    void updateAlarm(Long id, LocalTime time, String melody, String name, Set<DayOfWeek> days);
 
     void updateAlarmStatus(Long id, boolean active);
 

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane fx:id="dialogPane" prefHeight="683.0" prefWidth="767.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.oop.Controllers.AlarmAddDialogController">
+<DialogPane fx:id="dialogPane" prefHeight="683.0" prefWidth="767.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.oop.Controllers.AlarmAddOrEditDialogController">
 
     <content>
         <VBox prefHeight="600.0" prefWidth="635.0" spacing="20" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">

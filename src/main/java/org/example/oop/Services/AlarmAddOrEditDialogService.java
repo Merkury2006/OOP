@@ -7,7 +7,8 @@ import javafx.scene.control.DialogPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.oop.Config.AppConfig;
-import org.example.oop.Controllers.AlarmAddDialogController;
+import org.example.oop.Controllers.AlarmAddOrEditDialogController;
+import org.example.oop.Models.AlarmInterface;
 import org.example.oop.Utils.Utils;
 
 import java.io.IOException;
@@ -16,15 +17,15 @@ import java.time.LocalTime;
 import java.util.Optional;
 import java.util.Set;
 
-public class AlarmAddDialogService {
+public class AlarmAddOrEditDialogService {
 
-     public class ResultAddAlarm {
+     public class ResultAddOrEditAlarm {
         private final LocalTime time;
         private final String melody;
         private final String title;
         private final Set<DayOfWeek> days;
 
-        public ResultAddAlarm(LocalTime time, String melody, String title, Set<DayOfWeek> days) {
+        public ResultAddOrEditAlarm(LocalTime time, String melody, String title, Set<DayOfWeek> days) {
             this.time = time;
             this.melody = melody;
             this.title = title;
@@ -50,31 +51,45 @@ public class AlarmAddDialogService {
 
     private Stage mainStage;
 
-    public AlarmAddDialogService() {
+    public AlarmAddOrEditDialogService() {
     }
 
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
     }
 
-    public Optional<ResultAddAlarm> showAlarmAddDialog() {
-        Dialog<ResultAddAlarm> dialog = new Dialog<>();
-        dialog.setTitle(AppConfig.ALARM_ADD_DIALOG_SERVICE_TITLE);
+    public Optional<ResultAddOrEditAlarm> showAlarmAddDialog() {
+        return showAlarmAddOrEditDialog(null);
+    }
+
+    public Optional<ResultAddOrEditAlarm> showAlarmEditDialog(AlarmInterface alarm) {
+        return showAlarmAddOrEditDialog(alarm);
+    }
+
+    private Optional<ResultAddOrEditAlarm> showAlarmAddOrEditDialog(AlarmInterface editingAlarm) {
+        Dialog<ResultAddOrEditAlarm> dialog = new Dialog<>();
+        dialog.setTitle(editingAlarm == null ? AppConfig.ALARM_ADD_DIALOG_SERVICE_TITLE : AppConfig.ALARM_EDIT_DIALOG_SERVICE_TITLE);
 
         if (mainStage != null) {
             dialog.initOwner(mainStage);
             dialog.initModality(Modality.WINDOW_MODAL);
         }
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/oop/alarm_add_dialog.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/oop/alarm_add_or_edit_dialog.fxml"));
         try {
             DialogPane dialogPane = loader.load();
+
+            AlarmAddOrEditDialogController controller = loader.getController();
+
+            if(editingAlarm != null) {
+                controller.setEditMode(editingAlarm);
+            }
+
             dialog.setDialogPane(dialogPane);
 
             dialog.setResultConverter(buttonType -> {
                 if (buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-                    AlarmAddDialogController controller = loader.getController();
-                    return new ResultAddAlarm(controller.getSelectedTime(), controller.getSelectedMelody(), controller.getSelectedTitle(), controller.getSelectedDays());
+                    return new ResultAddOrEditAlarm(controller.getSelectedTime(), controller.getSelectedMelody(), controller.getSelectedTitle(), controller.getSelectedDays());
                 }
                 return null;
             });

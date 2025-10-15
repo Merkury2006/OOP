@@ -10,14 +10,17 @@ import org.example.oop.Controllers.AlarmItemController;
 import org.example.oop.Utils.Utils;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class AlarmItemsService {
     private final AlarmManagerInterface alarmManager;
+    private Consumer<AlarmInterface> onChangeAlarmCallback;
     private VBox alarmsContainer;
     private Label labelNoAlarms;
 
-    public AlarmItemsService(AlarmManagerInterface alarmManager) {
+    public AlarmItemsService(AlarmManagerInterface alarmManager, Consumer<AlarmInterface> onChangeAlarmCallback) {
         this.alarmManager = alarmManager;
+        this.onChangeAlarmCallback = onChangeAlarmCallback;
     }
 
     public void setAlarmsItemsContainers(VBox alarmsContainer, Label labelNoAlarms) {
@@ -31,9 +34,11 @@ public class AlarmItemsService {
             HBox alarmItem = loader.load();
             AlarmItemController alarmItemController = loader.getController();
 
-            alarmItemController.initialize(alarm,
+            alarmItemController.initialize(
+                    alarm,
                     () -> handleDeleteAlarm(alarm),
-                    (newStatus) -> handleStatusChange(alarm, newStatus));
+                    (newStatus) -> handleStatusChange(alarm, newStatus),
+                    () -> handleChangeAlarm(alarm));
 
             updateNoAlarmsLabel();
 
@@ -48,6 +53,12 @@ public class AlarmItemsService {
         alarmManager.deleteAlarm(alarm.getId());
         updateNoAlarmsLabel();
         reloadAlarmList();
+    }
+
+    private void handleChangeAlarm(AlarmInterface alarm) {
+        if (onChangeAlarmCallback != null) {
+            onChangeAlarmCallback.accept(alarm);
+        }
     }
 
     private void handleStatusChange(AlarmInterface alarm, boolean newStatus) {

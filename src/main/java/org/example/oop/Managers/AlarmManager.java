@@ -108,6 +108,38 @@ public class AlarmManager implements AlarmManagerInterface {
     }
 
     @Override
+    public void updateAlarm(Long id, LocalTime time, String melody, String name) {
+        deleteSnoozeAlarmFor(id);
+
+        getAlarmById(id).ifPresent(alarm -> {
+            alarm.setTime(time);
+            alarm.setMelody(melody);
+            alarm.setName(name);
+        });
+
+        saveAlarms();
+    }
+
+    @Override
+    public void updateAlarm(Long id, LocalTime time, String melody, String name, Set<DayOfWeek> days) {
+        deleteSnoozeAlarmFor(id);
+
+        getAlarmById(id).ifPresent(alarm -> {
+            alarm.setTime(time);
+            alarm.setMelody(melody);
+            alarm.setName(name);
+            if (days != null && alarm instanceof RepeatingAlarm repeatingAlarm) {
+                repeatingAlarm.setRepeatDays(days);
+            }
+            if (days != null && days.isEmpty()) {
+                alarm.setActive(false);
+            }
+        });
+
+        saveAlarms();
+    }
+
+    @Override
     public void updateAlarmStatus(Long id, boolean active) {
         Optional<AlarmInterface> alarmExist = getAlarmById(id);
         if (alarmExist.isPresent()) {

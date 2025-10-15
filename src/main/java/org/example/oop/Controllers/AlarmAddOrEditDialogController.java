@@ -1,18 +1,14 @@
 package org.example.oop.Controllers;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.example.oop.Models.AlarmInterface;
+import org.example.oop.Models.RepeatingAlarm;
 import org.example.oop.Services.AlarmSoundService;
 
 import java.net.URL;
@@ -20,9 +16,9 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class AlarmAddDialogController implements Initializable {
+public class AlarmAddOrEditDialogController implements Initializable {
+    @FXML private DialogPane dialogPane;
     @FXML private Spinner<Integer> hourSpinner;
     @FXML private Spinner<Integer> minuteSpinner;
     @FXML private Label selectedTimeLabel;
@@ -50,6 +46,26 @@ public class AlarmAddDialogController implements Initializable {
         setupMelodyComboBox();
         setupCheckBoxListeners();
         updateTimeDisplay();
+    }
+
+    public void setEditMode(AlarmInterface alarm) {
+        hourSpinner.getValueFactory().setValue(alarm.getTime().getHour());
+        minuteSpinner.getValueFactory().setValue(alarm.getTime().getMinute());
+        titleAlarm.setText(alarm.getName());
+        melodyComboBox.setValue(alarm.getMelody());
+
+        if (alarm instanceof RepeatingAlarm repeatingAlarm) {
+            setSelectedDays(repeatingAlarm.getRepeatDays());
+        }
+
+        updateTimeDisplay();
+
+        dialogPane.getButtonTypes().clear();
+        dialogPane.getButtonTypes().addAll(
+                new ButtonType("✅ Применить изменения", ButtonBar.ButtonData.OK_DONE),
+                new ButtonType("❌ Отмена", ButtonBar.ButtonData.CANCEL_CLOSE)
+        );
+
     }
 
     private void setupTimeSpinners() {

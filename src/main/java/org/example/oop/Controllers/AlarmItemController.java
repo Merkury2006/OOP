@@ -17,15 +17,17 @@ public class AlarmItemController {
     @FXML private ToggleButton activeToggle;
     private Runnable onDeleteCallback;
     private Consumer<Boolean> onStatusChangeCallback;
+    private Runnable onChangeCallback;
 
 
-    public void initialize(AlarmInterface alarm, Runnable onDeleteCallback, Consumer<Boolean> onStatusChangeCallback) {
+    public void initialize(AlarmInterface alarm, Runnable onDeleteCallback, Consumer<Boolean> onStatusChangeCallback, Runnable onChangeCallback) {
         this.isActive = alarm.isActive();
         this.timeLabel.setText(alarm.getTime().toString());
-        this.nameAlarmLabel.setText(alarm.getName());
+        this.nameAlarmLabel.setText(alarm.getDisplayName());
         this.activeToggle.setSelected(isActive);
         updateStatusText();
 
+        this.onChangeCallback = onChangeCallback;
         this.onDeleteCallback = onDeleteCallback;
         this.onStatusChangeCallback = onStatusChangeCallback;
 
@@ -51,5 +53,11 @@ public class AlarmItemController {
         statusLabel.setStyle(isActive ? "-fx-pref-width: 100; -fx-pref-height: 20; -fx-background-radius: 5; -fx-background-color: #2a9c35;" :
                 "-fx-pref-width: 100; -fx-pref-height: 20; -fx-background-radius: 5; -fx-background-color: transparent;");
         activeToggle.setText(isActive ? "✗ Выкл" : "✓ Вкл");
+    }
+
+    public void handleEdit(ActionEvent actionEvent) {
+        if (onChangeCallback != null) {
+            onChangeCallback.run();
+        }
     }
 }

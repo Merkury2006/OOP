@@ -7,15 +7,26 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 public class RepeatingAlarm extends Alarm{
-    private final Set<DayOfWeek> repeatDays;
+    private Set<DayOfWeek> repeatDays;
 
     public RepeatingAlarm(Long id, LocalTime time, boolean active, String melody, String name, Set<DayOfWeek> repeatDays) {
         super(id, time, active, melody, name);
         this.repeatDays = repeatDays;
     }
 
+    public Set<DayOfWeek> getRepeatDays() {
+        return repeatDays;
+    }
+
+    public void setRepeatDays(Set<DayOfWeek> repeatDays) {
+        this.repeatDays = repeatDays;
+    }
+
     @Override
-    public String getName() {
+    public String getDisplayName() {
+        if (repeatDays.isEmpty()) {
+            return "Повторяющийся " + getName().toLowerCase() + "(Никогда)";
+        }
         StringJoiner stringJoiner = new StringJoiner(", ");
         repeatDays.stream().sorted().forEach(day -> {
             switch (day) {
@@ -29,7 +40,7 @@ public class RepeatingAlarm extends Alarm{
             }
         });
 
-        return name + "(" + stringJoiner + ")";
+        return "Повторяющийся " + getName().toLowerCase() + "(" + stringJoiner + ")";
     }
 
     @Override

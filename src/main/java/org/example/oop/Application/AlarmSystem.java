@@ -6,24 +6,25 @@ import javafx.stage.Stage;
 import org.example.oop.Managers.AlarmManager;
 import org.example.oop.Managers.AlarmManagerInterface;
 import org.example.oop.Models.AlarmInterface;
+import org.example.oop.Models.RegularAlarm;
+import org.example.oop.Models.RepeatingAlarm;
 import org.example.oop.Services.*;
 import org.example.oop.Utils.Utils;
 
 import java.time.DayOfWeek;
-import java.util.Optional;
 import java.util.Set;
 
 public class AlarmSystem implements AlarmSystemInterface {
     private final AlarmManagerInterface alarmManager;
-    private final AlarmAddDialogService alarmAddDialogService;
+    private final AlarmAddOrEditDialogService alarmAddDialogService;
     private final AlarmItemsService alarmItemsService;
     private final NotificationService notificationService;
     private final AlarmCheckingService alarmCheckingService;
 
     public AlarmSystem() {
         this.alarmManager = new AlarmManager();
-        this.alarmAddDialogService = new AlarmAddDialogService();
-        this.alarmItemsService = new AlarmItemsService(alarmManager);
+        this.alarmAddDialogService = new AlarmAddOrEditDialogService();
+        this.alarmItemsService = new AlarmItemsService(alarmManager, this::showEditAlarmDialog);
         this.notificationService = new NotificationService();
         this.alarmCheckingService = new AlarmCheckingService(alarmManager, notificationService, alarmItemsService);
     }
@@ -46,19 +47,29 @@ public class AlarmSystem implements AlarmSystemInterface {
 
     @Override
     public void showAndAddAlarmDialog() {
-        Optional<AlarmAddDialogService.ResultAddAlarm> result = alarmAddDialogService.showAlarmAddDialog();
-        if (result.isPresent()) {
-            AlarmAddDialogService.ResultAddAlarm data = result.get();
-            Set<DayOfWeek> repeatDays = data.getDays();
+        alarmAddDialogService.showAlarmAddDialog().ifPresent(result -> {
+            Set<DayOfWeek> repeatDays = result.getDays();
             AlarmInterface newAlarm;
             if (repeatDays.isEmpty()) {
-                newAlarm = alarmManager.addAlarm(result.get().getTime(), true, result.get().getMelody(), result.get().getTitle());
+                newAlarm = alarmManager.addAlarm(result.getTime(), true, result.getMelody(), result.getTitle());
             }
             else {
-                newAlarm = alarmManager.addAlarm(result.get().getTime(), true, result.get().getMelody(), result.get().getTitle(), result.get().getDays());
+                newAlarm = alarmManager.addAlarm(result.getTime(), true, result.getMelody(), result.getTitle(), result.getDays());
             }
             alarmItemsService.createAndAddAlarmItem(newAlarm);
-        }
+        });
+    }
+
+    @Override
+    public void showEditAlarmDialog(AlarmInterface alarm) {
+        alarmAddDialogService.showAlarmEditDialog(alarm).ifPresent(result -> {
+            switch (alarm) {
+                case RegularAlarm _ -> alarmManager.updateAlarm(alarm.getId(), result.getTime(), result.getMelody(), result.getTitle());
+                case RepeatingAlarm _ ->  alarmManager.updateAlarm(alarm.getId(), result.getTime(), result.getMelody(), result.getTitle(), result.getDays());
+                default -> throw new IllegalStateException("Unexpected value: " + alarm);
+            }
+            reloadAlarmList();
+        });
     }
 
     @Override

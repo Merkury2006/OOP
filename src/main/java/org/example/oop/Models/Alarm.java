@@ -6,7 +6,6 @@ public abstract class Alarm implements AlarmInterface {
     public enum AlarmType {
         REGULAR,
         REPEATING,
-        REMINDER,
         SNOOZE
     }
 
@@ -33,8 +32,12 @@ public abstract class Alarm implements AlarmInterface {
     @Override public void setActive(boolean active) { this.active = active; }
 
     @Override public String getName() {return name; }
+    @Override public void setName(String name) {this.name = name;}
 
     @Override public String getMelody() {return melody;}
+
+    @Override public void setMelody(String melody) {this.melody = melody;}
+
 
 
 
