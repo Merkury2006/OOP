@@ -4,7 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
-import org.example.oop.AlarmInterface;
+import org.example.oop.Models.AlarmInterface;
 
 import java.util.function.Consumer;
 

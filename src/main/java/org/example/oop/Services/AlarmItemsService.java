@@ -4,10 +4,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.example.oop.AlarmInterface;
-import org.example.oop.AlarmManagerInterface;
+import org.example.oop.Models.AlarmInterface;
+import org.example.oop.Managers.AlarmManagerInterface;
 import org.example.oop.Controllers.AlarmItemController;
-import org.example.oop.Utils;
+import org.example.oop.Utils.Utils;
 
 import java.io.IOException;
 

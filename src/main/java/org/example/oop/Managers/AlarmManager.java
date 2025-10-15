@@ -1,9 +1,15 @@
-package org.example.oop;
+package org.example.oop.Managers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.fatboyindustrial.gsonjavatime.Converters;
+import org.example.oop.Config.AppConfig;
+import org.example.oop.Models.AlarmInterface;
+import org.example.oop.Models.AlarmInterfaceAdapter;
+import org.example.oop.Models.RegularAlarm;
+import org.example.oop.Models.SnoozeAlarm;
+import org.example.oop.Utils.Utils;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -15,7 +21,7 @@ public class AlarmManager implements AlarmManagerInterface {
     private List<AlarmInterface> alarmList = new ArrayList<>();
     private long nextId = 1;
     private final Gson gson;
-    private static final String ALARMS_FILE = "data/alarms.json";
+    private static final String ALARMS_FILE = AppConfig.ALARMS_FILE;
 
     private final Map<Long, LocalDateTime> snoozeLastTriggered = new HashMap<>();
 
@@ -38,7 +44,7 @@ public class AlarmManager implements AlarmManagerInterface {
 
     @Override
     public AlarmInterface addAlarm(LocalTime time, boolean active, String melody) {
-        AlarmInterface alarm = new RegularAlarm(nextId++, time,active, melody, "Будильник");
+        AlarmInterface alarm = new RegularAlarm(nextId++, time,active, melody, AppConfig.DEFAULT_ALARM_TITLE);
         alarmList.add(alarm);
         saveAlarms();
         return alarm;

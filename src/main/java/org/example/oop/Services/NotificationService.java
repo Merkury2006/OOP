@@ -8,14 +8,12 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.example.oop.AlarmInterface;
+import org.example.oop.Models.AlarmInterface;
 import org.example.oop.Controllers.NotificationController;
-import org.example.oop.Utils;
+import org.example.oop.Utils.Utils;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class NotificationService {

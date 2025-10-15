@@ -2,8 +2,7 @@ package org.example.oop.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.example.oop.AlarmInterface;
-import org.example.oop.SnoozeAlarm;
+import org.example.oop.Models.AlarmInterface;
 
 public class NotificationController {
     @FXML private Label labelAlarmToRing;

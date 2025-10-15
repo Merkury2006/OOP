@@ -1,4 +1,4 @@
-package org.example.oop;
+package org.example.oop.Models;
 
 import java.time.LocalTime;
 

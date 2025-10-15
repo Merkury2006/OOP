@@ -11,7 +11,16 @@ module org.example.oop {
     opens org.example.oop to javafx.fxml, com.google.gson;
     opens org.example.oop.Controllers to javafx.fxml;
 
-    exports org.example.oop;
     exports org.example.oop.Controllers;
     exports org.example.oop.Services;
+    exports org.example.oop.Config;
+    opens org.example.oop.Config to com.google.gson, javafx.fxml;
+    exports org.example.oop.Models;
+    opens org.example.oop.Models to com.google.gson, javafx.fxml;
+    exports org.example.oop.Managers;
+    opens org.example.oop.Managers to com.google.gson, javafx.fxml;
+    exports org.example.oop.Utils;
+    opens org.example.oop.Utils to com.google.gson, javafx.fxml;
+    exports org.example.oop.Application;
+    opens org.example.oop.Application to com.google.gson, javafx.fxml;
 }

@@ -1,4 +1,6 @@
-package org.example.oop;
+package org.example.oop.Managers;
+
+import org.example.oop.Models.AlarmInterface;
 
 import java.time.LocalTime;
 import java.util.List;

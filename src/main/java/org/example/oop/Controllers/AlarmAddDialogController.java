@@ -12,7 +12,7 @@ import java.net.URL;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
-public class TimePickerController implements Initializable {
+public class AlarmAddDialogController implements Initializable {
 
     @FXML private Spinner<Integer> hourSpinner;
     @FXML private Spinner<Integer> minuteSpinner;
