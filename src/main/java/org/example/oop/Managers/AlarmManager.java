@@ -2,17 +2,16 @@ package org.example.oop.Managers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.fatboyindustrial.gsonjavatime.Converters;
 import org.example.oop.Config.AppConfig;
-import org.example.oop.Models.AlarmInterface;
-import org.example.oop.Models.AlarmInterfaceAdapter;
-import org.example.oop.Models.RegularAlarm;
-import org.example.oop.Models.SnoozeAlarm;
+import org.example.oop.Models.*;
 import org.example.oop.Utils.Utils;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -42,9 +41,10 @@ public class AlarmManager implements AlarmManagerInterface {
         return alarm;
     }
 
+    //Для RepeatingAlarm
     @Override
-    public AlarmInterface addAlarm(LocalTime time, boolean active, String melody) {
-        AlarmInterface alarm = new RegularAlarm(nextId++, time,active, melody, AppConfig.DEFAULT_ALARM_TITLE);
+    public AlarmInterface addAlarm(LocalTime time, boolean active, String melody, String name, Set<DayOfWeek> days) {
+        AlarmInterface alarm = new RepeatingAlarm(nextId++, time, active, melody, name, days);
         alarmList.add(alarm);
         saveAlarms();
         return alarm;
@@ -77,16 +77,27 @@ public class AlarmManager implements AlarmManagerInterface {
         Optional<AlarmInterface> alarmExist = getAlarmById(id);
         if (alarmExist.isPresent()) {
             AlarmInterface alarm = alarmExist.get();
-            if (alarm instanceof RegularAlarm) {
-                deleteSnoozeAlarmFor(alarm.getId());
-            }
-            else if (alarm instanceof SnoozeAlarm) {
-                updateAlarmStatus( ((SnoozeAlarm) alarm).getParentAlarmId(), false);
+
+            switch (alarm) {
+                case RegularAlarm _, RepeatingAlarm _ -> deleteSnoozeAlarmFor(alarm.getId());
+                case SnoozeAlarm snooze -> handleSnoozeAlarmDeletion(snooze);
+                default -> throw new IllegalStateException("Unexpected value: " + alarm);
             }
             alarmList.remove(alarm);
             snoozeLastTriggered.remove(id);
             saveAlarms();
         }
+    }
+
+    private void handleSnoozeAlarmDeletion(SnoozeAlarm alarm) {
+        getAlarmById(alarm.getParentAlarmId()).ifPresent(parentAlarm -> {
+            switch (parentAlarm) {
+                case RegularAlarm _ -> parentAlarm.setActive(false);
+                case RepeatingAlarm _ -> {
+                }
+                default -> throw new IllegalStateException("Unexpected value: " + parentAlarm);
+            }
+        });
     }
 
     private void deleteSnoozeAlarmFor(Long parentAlarmId) {
@@ -102,15 +113,32 @@ public class AlarmManager implements AlarmManagerInterface {
         if (alarmExist.isPresent()) {
             AlarmInterface alarm = alarmExist.get();
             alarm.setActive(active);
-
-             if(!active && alarm instanceof SnoozeAlarm) {
-                 updateAlarmStatus(((SnoozeAlarm) alarm).getParentAlarmId(), false);
-            }
-            else if (!active && alarm instanceof RegularAlarm) {
-                deleteSnoozeAlarmFor(alarm.getId());
+            if (!active) {
+               handleAlarmDeactivation(alarm);
             }
             saveAlarms();
         }
+    }
+
+    private void handleAlarmDeactivation(AlarmInterface alarm) {
+        switch (alarm) {
+            case SnoozeAlarm snoozeAlarm -> handleSnoozeAlarmDeactivation(snoozeAlarm);
+            case RegularAlarm _, RepeatingAlarm _-> deleteSnoozeAlarmFor(alarm.getId());
+            default -> throw new IllegalStateException("Unexpected value: " + alarm);
+        }
+    }
+
+    private void handleSnoozeAlarmDeactivation(SnoozeAlarm snoozeAlarm) {
+        getAlarmById((snoozeAlarm).getParentAlarmId()).ifPresent(parentAlarm -> {
+            switch (parentAlarm) {
+                case RegularAlarm regularParent -> {
+                    parentAlarm.setActive(false);
+                    deleteSnoozeAlarmFor(parentAlarm.getId());
+                }
+                case RepeatingAlarm repeatingParent -> deleteSnoozeAlarmFor(parentAlarm.getId());
+                default -> throw new IllegalStateException("Unexpected value: " + parentAlarm);
+            }
+        });
     }
 
     @Override
@@ -188,7 +216,7 @@ public class AlarmManager implements AlarmManagerInterface {
             Utils.showError("Ошибка загрузки JSON: " + e.getMessage());
             this.alarmList = new ArrayList<>();
             this.nextId = 1;
-        } catch (com.google.gson.JsonSyntaxException e) {
+        } catch (JsonSyntaxException e) {
             Utils.showError("Невалидный JSON: " + e.getMessage());
             this.alarmList = new ArrayList<>();
             this.nextId = 1;

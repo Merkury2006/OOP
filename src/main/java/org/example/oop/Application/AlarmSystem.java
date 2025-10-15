@@ -9,7 +9,9 @@ import org.example.oop.Models.AlarmInterface;
 import org.example.oop.Services.*;
 import org.example.oop.Utils.Utils;
 
+import java.time.DayOfWeek;
 import java.util.Optional;
+import java.util.Set;
 
 public class AlarmSystem implements AlarmSystemInterface {
     private final AlarmManagerInterface alarmManager;
@@ -46,7 +48,15 @@ public class AlarmSystem implements AlarmSystemInterface {
     public void showAndAddAlarmDialog() {
         Optional<AlarmAddDialogService.ResultAddAlarm> result = alarmAddDialogService.showAlarmAddDialog();
         if (result.isPresent()) {
-            AlarmInterface newAlarm = alarmManager.addAlarm(result.get().getTime(), true, result.get().getMelody());
+            AlarmAddDialogService.ResultAddAlarm data = result.get();
+            Set<DayOfWeek> repeatDays = data.getDays();
+            AlarmInterface newAlarm;
+            if (repeatDays.isEmpty()) {
+                newAlarm = alarmManager.addAlarm(result.get().getTime(), true, result.get().getMelody(), result.get().getTitle());
+            }
+            else {
+                newAlarm = alarmManager.addAlarm(result.get().getTime(), true, result.get().getMelody(), result.get().getTitle(), result.get().getDays());
+            }
             alarmItemsService.createAndAddAlarmItem(newAlarm);
         }
     }

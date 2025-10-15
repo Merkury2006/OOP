@@ -1,7 +1,5 @@
 package org.example.oop.Models;
 
-import org.example.oop.Config.AppConfig;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -11,10 +9,6 @@ public class RegularAlarm extends Alarm {
     public RegularAlarm(Long ID, LocalTime time, boolean isActive, String melody, String name) {
         super(ID, time, isActive, melody, name);
         this.alarmDate = LocalDate.now();
-    }
-
-    public RegularAlarm(Long ID, LocalTime time, boolean isActive, String melody) {
-        this(ID, time, isActive, melody, AppConfig.DEFAULT_ALARM_TITLE);
     }
 
     @Override

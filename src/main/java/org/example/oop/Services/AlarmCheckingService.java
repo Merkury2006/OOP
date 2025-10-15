@@ -5,10 +5,12 @@ import org.example.oop.Config.AppConfig;
 import org.example.oop.Managers.AlarmManagerInterface;
 import org.example.oop.Models.AlarmInterface;
 import org.example.oop.Models.RegularAlarm;
+import org.example.oop.Models.RepeatingAlarm;
 import org.example.oop.Models.SnoozeAlarm;
 import org.example.oop.Utils.Utils;
 
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -67,28 +69,38 @@ public class AlarmCheckingService {
     private void handleAlarmAction(AlarmInterface alarm, NotificationService.NotificationResult result) {
         switch (result) {
             case SNOOZE:
-                LocalTime snoozeTime = alarm.getTime().plusMinutes(AppConfig.SNOOZE_MINUTES);
-
-                if (alarm instanceof SnoozeAlarm) {
-                    ((SnoozeAlarm) alarm).reschedule(snoozeTime);
-                    alarmManager.saveAlarms();
-                } else if (alarm instanceof RegularAlarm) {
-                    alarmManager.addAlarm(snoozeTime, true, alarm.getMelody(),
-                            alarm.getName() + AppConfig.ALARM_SNOOZE_PREFIX + alarm.getTime(), alarm.getId());
-                }
+                handleSnooze(alarm);
                 break;
-
             case DISMISS:
-                if (alarm instanceof SnoozeAlarm) {
-                    alarmManager.updateAlarmStatus( ((SnoozeAlarm) alarm).getParentAlarmId(), false);
-                    alarmManager.deleteAlarm(alarm.getId());
-                } else {
-                    alarmManager.updateAlarmStatus(alarm.getId(), false);
-                }
+               handleDismiss(alarm);
                 break;
-
             case IGNORE:
                 break;
         }
+    }
+
+    private void handleSnooze(AlarmInterface alarm) {
+        LocalTime snoozeTime = alarm.getTime().plusMinutes(AppConfig.SNOOZE_MINUTES);
+
+        if (alarm instanceof SnoozeAlarm snoozeAlarm) {
+            snoozeAlarm.reschedule(snoozeTime);
+            alarmManager.saveAlarms();
+        } else {
+            alarmManager.addAlarm(snoozeTime, true, alarm.getMelody(),
+                    alarm.getName() + AppConfig.ALARM_SNOOZE_PREFIX + alarm.getTime(), alarm.getId());
+        }
+    }
+
+    private void handleDismiss(AlarmInterface alarm) {
+        switch (alarm) {
+            case SnoozeAlarm snoozeAlarm -> handleSnoozeAlarmDismiss(snoozeAlarm);
+            case RegularAlarm regularAlarm -> alarmManager.updateAlarmStatus(regularAlarm.getId(), false);
+            case RepeatingAlarm repeatingAlarm -> {}
+            default -> throw new IllegalStateException("Unexpected value: " + alarm);
+        }
+    }
+
+    private void handleSnoozeAlarmDismiss(AlarmInterface alarm) {
+        alarmManager.deleteAlarm(alarm.getId());
     }
 }

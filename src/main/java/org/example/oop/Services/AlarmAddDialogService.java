@@ -11,18 +11,24 @@ import org.example.oop.Controllers.AlarmAddDialogController;
 import org.example.oop.Utils.Utils;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Optional;
+import java.util.Set;
 
 public class AlarmAddDialogService {
 
      public class ResultAddAlarm {
         private final LocalTime time;
         private final String melody;
+        private final String title;
+        private final Set<DayOfWeek> days;
 
-        public ResultAddAlarm(LocalTime time, String melody) {
+        public ResultAddAlarm(LocalTime time, String melody, String title, Set<DayOfWeek> days) {
             this.time = time;
             this.melody = melody;
+            this.title = title;
+            this.days = days;
         }
 
         public LocalTime getTime() {
@@ -32,7 +38,15 @@ public class AlarmAddDialogService {
         public String getMelody() {
             return melody;
         }
-    }
+
+        public String getTitle(){
+            return title;
+        }
+
+         public Set<DayOfWeek> getDays() {
+             return days;
+         }
+     }
 
     private Stage mainStage;
 
@@ -60,7 +74,7 @@ public class AlarmAddDialogService {
             dialog.setResultConverter(buttonType -> {
                 if (buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     AlarmAddDialogController controller = loader.getController();
-                    return new ResultAddAlarm(controller.getSelectedTime(), controller.getSelectedMelody());
+                    return new ResultAddAlarm(controller.getSelectedTime(), controller.getSelectedMelody(), controller.getSelectedTitle(), controller.getSelectedDays());
                 }
                 return null;
             });
