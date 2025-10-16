@@ -6,6 +6,7 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
+dependency-reduced-pom.xml
 
 #Json data
 data/
