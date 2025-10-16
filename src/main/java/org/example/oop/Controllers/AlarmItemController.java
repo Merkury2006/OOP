@@ -2,6 +2,7 @@ package org.example.oop.Controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import org.example.oop.Models.AlarmInterface;
@@ -15,6 +16,7 @@ public class AlarmItemController {
     @FXML private Label statusLabel;
     @FXML private Label timeLabel;
     @FXML private ToggleButton activeToggle;
+    @FXML private Button editButton;
     private Runnable onDeleteCallback;
     private Consumer<Boolean> onStatusChangeCallback;
     private Runnable onChangeCallback;
@@ -26,6 +28,9 @@ public class AlarmItemController {
         this.nameAlarmLabel.setText(alarm.getDisplayName());
         this.activeToggle.setSelected(isActive);
         updateStatusText();
+
+        editButton.setVisible(alarm.isEditable());
+        editButton.setManaged(alarm.isEditable());
 
         this.onChangeCallback = onChangeCallback;
         this.onDeleteCallback = onDeleteCallback;

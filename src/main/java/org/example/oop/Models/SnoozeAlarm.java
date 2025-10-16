@@ -11,6 +11,11 @@ public class SnoozeAlarm extends Alarm {
     }
 
     @Override
+    public boolean isEditable() {
+        return false;
+    }
+
+    @Override
     public AlarmType getType() {
         return AlarmType.SNOOZE;
     }

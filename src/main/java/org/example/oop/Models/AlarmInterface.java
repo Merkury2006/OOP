@@ -14,6 +14,10 @@ public interface AlarmInterface {
         return getName();
     }
 
+    default boolean isEditable() {
+        return true;
+    }
+
     String getName();
 
     LocalTime getTime();
