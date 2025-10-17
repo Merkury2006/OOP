@@ -30,5 +30,5 @@ public interface AlarmInterface {
 
     boolean shouldRingToday();
 
-    Alarm.AlarmType getType();
+    AlarmType getType();
 }

@@ -6,7 +6,10 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestableAlarm extends Alarm {
     public TestableAlarm(Long id, LocalTime time, boolean active, String melody, String name) {
@@ -88,7 +91,7 @@ class AlarmTest {
     @Test
     @DisplayName("Should return correct alarm type")
     void shouldReturnCorrectAlarmType() {
-        assertEquals(Alarm.AlarmType.REGULAR, alarm.getType());
+        assertEquals(AlarmType.REGULAR, alarm.getType());
     }
 
     @Test

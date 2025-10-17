@@ -3,7 +3,15 @@ package org.example.oop.Controllers;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -14,8 +22,12 @@ import org.example.oop.Services.AlarmSoundService;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
 
-import java.util.*;
 
 public class AlarmAddOrEditDialogController implements Initializable {
     @FXML private DialogPane dialogPane;

@@ -3,7 +3,11 @@ package org.example.oop.Models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 class SnoozeAlarmTest {
 
@@ -20,7 +24,7 @@ class SnoozeAlarmTest {
         assertEquals(2L, alarm.getId());
         assertEquals(1L, alarm.getParentAlarmId());
         assertFalse(alarm.isEditable());
-        assertEquals(Alarm.AlarmType.SNOOZE, alarm.getType());
+        assertEquals(AlarmType.SNOOZE, alarm.getType());
     }
 
     @Test

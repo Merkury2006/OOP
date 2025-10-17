@@ -6,7 +6,8 @@ import org.example.oop.Managers.AlarmManager;
 
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class AlarmCheckingServiceTest {
 

@@ -3,7 +3,9 @@ package org.example.oop.Models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RegularAlarmTest {
 
@@ -22,7 +24,7 @@ class RegularAlarmTest {
         assertTrue(alarm.isActive());
         assertEquals("Мелодия", alarm.getMelody());
         assertEquals("Тестовый будильник", alarm.getName());
-        assertEquals(Alarm.AlarmType.REGULAR, alarm.getType());
+        assertEquals(AlarmType.REGULAR, alarm.getType());
     }
 
     @Test

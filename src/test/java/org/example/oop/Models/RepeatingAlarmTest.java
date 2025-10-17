@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Set;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RepeatingAlarmTest {
 
@@ -24,7 +26,7 @@ class RepeatingAlarmTest {
         assertEquals(LocalTime.of(9, 0), alarm.getTime());
         assertTrue(alarm.isActive());
         assertEquals(Set.of(DayOfWeek.MONDAY, DayOfWeek.FRIDAY), alarm.getRepeatDays());
-        assertEquals(Alarm.AlarmType.REPEATING, alarm.getType());
+        assertEquals(AlarmType.REPEATING, alarm.getType());
     }
 
     @Test

@@ -3,11 +3,6 @@ package org.example.oop.Models;
 import java.time.LocalTime;
 
 public abstract class Alarm implements AlarmInterface {
-    public enum AlarmType {
-        REGULAR,
-        REPEATING,
-        SNOOZE
-    }
 
     protected Long id;
     protected LocalTime time;
